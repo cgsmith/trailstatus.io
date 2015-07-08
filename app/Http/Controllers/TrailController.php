@@ -37,17 +37,19 @@ class TrailController extends Controller
      * Initiate an outbound call and pull down John Muir trail info
      *
      * @param Request $request
+     * @param $token
      * @return string
+     * @throws \Exception
      */
     public function update(Request $request, $token)
     {
-        if ($token === config('UPDATE_TOKEN')) {
+        if ($token !== $_ENV['UPDATE_TOKEN']) {
             abort(404);
         };
-        $client = new \Services_Twilio(config('TWILIO_ACCOUNT_SID'), config('TWILIO_AUTH_TOKEN'));
+        $client = new \Services_Twilio($_ENV['TWILIO_ACCOUNT_SID'], $_ENV['TWILIO_AUTH_TOKEN']);
 
         try {
-            $call = $client->account->calls->create(config('CALL_FROM'), '2625946202', 'http://trailstatus.io/call.xml',
+            $call = $client->account->calls->create($_ENV['CALL_FROM'], '2625946202', 'http://trailstatus.io/call.xml',
                 array(
                     'Method' => 'GET',
                     'FallbackMethod' => 'GET',
@@ -59,6 +61,7 @@ class TrailController extends Controller
             echo 'Started call: ' . $call->sid;
         } catch (\Exception $e) {
             echo 'Error: ' . $e->getMessage();
+            throw $e;
         }
     }
 
