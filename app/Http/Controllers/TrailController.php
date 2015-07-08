@@ -83,7 +83,7 @@ class TrailController extends Controller
                             'updated' => $date->format('Y-m-d H:i:s'),
                             'translation'=> $transcription->transcription_text,
                             'status' => $status,
-                            'callId' => $transcription->CallSid
+                            'callId' => $request->input('CallSid');
                         ]);
                 }
             }
@@ -102,6 +102,7 @@ class TrailController extends Controller
         curl_exec($ch);
         curl_close($ch);
         fclose($fp);
+        return response()->json('success');
     }
 
 }
