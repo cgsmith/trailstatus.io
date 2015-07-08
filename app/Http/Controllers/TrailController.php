@@ -23,7 +23,7 @@ class TrailController extends Controller
         if ('/john-muir/json' === $request->getRequestUri()) {
             return response()->json($trail);
         }else if ('/john-muir/xml' === $request->getRequestUri()) {
-            return response(view('xml',['trail'=>$trail]),200,['Content-type','text/xml']);
+            return response(view('xml',['trail'=>$trail]),200,['Content-Type','application/rss+xml']);
         }
         return view('index',['trail'=>$trail]);
     }
