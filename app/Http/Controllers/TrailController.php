@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Laravel\Lumen\Routing\Controller;
 
 class TrailController extends Controller
@@ -15,17 +16,21 @@ class TrailController extends Controller
     public function index(Request $request)
     {
         $date = new \DateTime('now', new \DateTimeZone('America/Chicago'));
+        $trail['name'] = 'John Muir Trail';
+        $trail['coords'] = ['42.821015','-88.601722'];
         $trail['status'] = 'closed';
         $trail['date'] = $date->format('m-d-Y g:ia');
-        if ('/json' === $request->getRequestUri()) {
+        if ('/john-muir/json' === $request->getRequestUri()) {
             return response()->json([
-                'name'=>'John Muir Trail',
-                'coordinates'=>['42.821015','-88.601722'],
+                'name'=>$trail['name'],
+                'coordinates'=>$trail['coords'],
                 'status'=>$trail['status'],
                 'updated'=>$trail['date']
             ]);
+        }else if ('/john-muir/xml' === $request->getRequestUri()) {
+            return response(view('xml',['trail'=>$trail]),200,['Content-type','text/xml']);
         }
-        return view('index',$trail);
+        return view('index',['trail'=>$trail]);
     }
 
     /**

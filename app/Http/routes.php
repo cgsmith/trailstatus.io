@@ -4,7 +4,11 @@ $app->get('/', [
     'uses' => 'App\Http\Controllers\TrailController@index'
 ]);
 
-$app->get('/json', [
+$app->get('/john-muir/json', [
+    'uses' => 'App\Http\Controllers\TrailController@index'
+]);
+
+$app->get('/john-muir/xml', [
     'uses' => 'App\Http\Controllers\TrailController@index'
 ]);
 

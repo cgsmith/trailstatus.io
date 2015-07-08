@@ -48,7 +48,12 @@
             position: relative;
             z-index: 10;
             height: 3em;
-            margin-top: -3em;
+            margin-top: -6em;
+        }
+
+        .fb-like {
+            text-align: center;
+            display: inline-block;
         }
 
     </style>
@@ -64,6 +69,14 @@
     </script>
 </head>
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=189584151200106";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
 <div id="container">
     <div class="content">
         <div class="title">John Muir Trail System</div>
@@ -72,7 +85,8 @@
     </div>
 </div>
 <div id="footer">
-    <a href="https://github.com/cgsmith/trailstatus.io">About/Github/Feedback</a>
+    <a href="https://github.com/cgsmith/trailstatus.io">About/Github/Feedback</a><br/>
+    <div class="fb-like" data-href="http://trailstatus.io" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 </div>
 </body>
 </html>
