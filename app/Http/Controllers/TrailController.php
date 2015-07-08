@@ -15,10 +15,10 @@ class TrailController extends Controller
      */
     public function index(Request $request)
     {
-        $date = new \DateTime('now', new \DateTimeZone('America/Chicago'));
+        $date = new \DateTime('7-7-2016 20:02', new \DateTimeZone('America/Chicago'));
         $trail['name'] = 'John Muir Trail';
         $trail['coords'] = ['42.821015','-88.601722'];
-        $trail['status'] = 'closed';
+        $trail['status'] = 'open';
         $trail['date'] = $date->format('m-d-Y g:ia');
         if ('/john-muir/json' === $request->getRequestUri()) {
             return response()->json([
