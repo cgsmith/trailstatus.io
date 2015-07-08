@@ -82,7 +82,8 @@ class TrailController extends Controller
                         ->update([
                             'updated' => $date->format('Y-m-d H:i:s'),
                             'translation'=> $transcription->transcription_text,
-                            'status' => $status
+                            'status' => $status,
+                            'callId' => $transcription->CallSid
                         ]);
                 }
             }
