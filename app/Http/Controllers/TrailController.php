@@ -76,10 +76,11 @@ class TrailController extends Controller
                 // sanity check to make sure the recording is what we think
                 if ($transcription->recording_sid == $request->input('RecordingSid')) {
                     $status = (preg_match('/open/i',$transcription->transcription_text)) ? 'open' : 'closed';
+                    $date = new \DateTime('now', new \DateTimeZone('America/Chicago'));
                     DB::table('trails')
                         ->where('id', 1)
                         ->update([
-                            'updated' => date('Y-m-d H:i:s'),
+                            'updated' => $date->format('Y-m-d H:i:s'),
                             'translation'=> $transcription->transcription_text,
                             'status' => $status
                         ]);
