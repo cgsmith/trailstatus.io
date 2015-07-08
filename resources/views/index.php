@@ -80,12 +80,15 @@
 <div id="container">
     <div class="content">
         <div class="title">John Muir Trail System</div>
-        <div class="<?=$status?>"><?=strtoupper($status)?></div>
-        <div class="updated">Last updated: <?=$date;?></div>
+        <div class="<?=$trail['status']?>"><?=strtoupper($trail['status'])?></div>
+        <div class="updated">Last updated: <?=$trail['date'];?></div>
     </div>
 </div>
 <div id="footer">
     <a href="https://github.com/cgsmith/trailstatus.io">About/Github/Feedback</a><br/>
+    <a href="http://trailstatus.io/john-muir/json">JSON?</a> |
+    <a href="http://trailstatus.io/john-muir/xml">XML?</a> |
+    <a href="https://ifttt.com/recipes/305632-john-muir-trail-updates-via-text">IFTTT?</a> <br/>
     <div class="fb-like" data-href="http://trailstatus.io" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 </div>
 </body>
