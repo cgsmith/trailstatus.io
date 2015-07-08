@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
 
 class TrailController extends Controller
@@ -15,18 +15,13 @@ class TrailController extends Controller
      */
     public function index(Request $request)
     {
-        $date = new \DateTime('7-7-2016 20:02', new \DateTimeZone('America/Chicago'));
-        $trail['name'] = 'John Muir Trail';
-        $trail['coords'] = ['42.821015','-88.601722'];
-        $trail['status'] = 'open';
-        $trail['date'] = $date->format('m-d-Y g:ia');
+        $trails = DB::select('select * from trails where id = ?', [1]);
+        $trail = $trails[0]; //stupid but will refactor after feedback
+        $date = new \DateTime($trail->updated, new \DateTimeZone('America/Chicago'));
+        $trail->updated = $date->format('m-d-Y g:ia');
+        $trail->recording = 'recording.wav';
         if ('/john-muir/json' === $request->getRequestUri()) {
-            return response()->json([
-                'name'=>$trail['name'],
-                'coordinates'=>$trail['coords'],
-                'status'=>$trail['status'],
-                'updated'=>$trail['date']
-            ]);
+            return response()->json($trail);
         }else if ('/john-muir/xml' === $request->getRequestUri()) {
             return response(view('xml',['trail'=>$trail]),200,['Content-type','text/xml']);
         }
@@ -67,16 +62,43 @@ class TrailController extends Controller
 
     /**
      * @param Request $request
+     * @throws \Exception
      */
     public function persist(Request $request)
     {
+        // Get transcription
+        $client = new \Services_Twilio($_ENV['TWILIO_ACCOUNT_SID'], $_ENV['TWILIO_AUTH_TOKEN']);
+        try {
+            // The only way i currently know to efficiently get a transcript
+            $transcriptions = $client->account->transcriptions->getIterator(0, 1);
+
+            foreach ($transcriptions as $transcription) {
+                // sanity check to make sure the recording is what we think
+                if ($transcription->recording_sid == $request->input('RecordingSid')) {
+                    $status = (preg_match('/open/i',$transcription->transcription_text)) ? 'open' : 'closed';
+                    DB::table('trails')
+                        ->where('id', 1)
+                        ->update([
+                            'updated' => date('Y-m-d H:i:s'),
+                            'translation'=> $transcription->transcription_text,
+                            'status' => $status
+                        ]);
+                }
+            }
+        } catch (\Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+            throw $e;
+        }
+
+        // Download recording
+        $ch = curl_init();
+        $fp = fopen(__DIR__.'/../../../public/recording.wav', 'w+');
         curl_setopt($ch, CURLOPT_URL, $request->input('RecordingUrl'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        $out = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_FILE, $fp); // write curl response to file
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
         curl_close($ch);
-        $fp = fopen('public/recording.wav', 'w');
-        fwrite($fp, $out);
         fclose($fp);
     }
 

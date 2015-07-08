@@ -80,8 +80,9 @@
 <div id="container">
     <div class="content">
         <div class="title">John Muir Trail System</div>
-        <div class="<?=$trail['status']?>"><?=strtoupper($trail['status'])?></div>
-        <div class="updated">Last updated: <?=$trail['date'];?></div>
+        <div class="<?=$trail->status?>"><?=strtoupper($trail->status)?></div><br/>
+        <div class="recording"><audio id="audio1" src="recording.wav" controls preload="auto" autobuffer></audio></div>
+        <div class="updated">Last updated: <?=$trail->updated;?></div>
     </div>
 </div>
 <div id="footer">
